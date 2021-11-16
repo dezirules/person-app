@@ -1,0 +1,96 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    {{ id_car ? "Modificare" : "Adăugare" }} informație
+  </h4>
+</div>
+
+<div class="modal-body">
+  <div class="row">
+    <label class="col-2 control-label">Marcă*</label>
+    <div class="col-4">
+      <input
+        [(ngModel)]="car.brand"
+        class="form-control"
+        placeholder="Marcă..."
+        maxlength="200"
+        [class.error]="errors.brand"
+      />
+      <label [hidden]="!errors.brand" class="error-label">
+        {{ errors.brand }}
+      </label>
+    </div>
+
+    <label class="col-2 control-label">Model*</label>
+    <div class="col-4">
+      <input
+        [(ngModel)]="car.model"
+        class="form-control"
+        placeholder="Model..."
+        maxlength="200"
+        [class.error]="errors.model"
+      />
+      <label [hidden]="!errors.model" class="error-label">
+        {{ errors.model }}
+      </label>
+    </div>
+  </div>
+
+  <div class="row">
+    <label class="col-2 control-label">Anul fabricației*</label>
+    <div class="col-4">
+      <input
+        type="number"
+        [(ngModel)]="car.year"
+        class="form-control"
+        placeholder="Anul fabricației..."
+        maxlength="200"
+        [class.error]="errors.year"
+      />
+      <label [hidden]="!errors.year" class="error-label">
+        {{ errors.year }}
+      </label>
+    </div>
+
+    <label class="col-2 control-label">Capacitatea cilindrică*</label>
+    <div class="col-4">
+      <input
+        type="number"
+        [(ngModel)]="car.cylinder_capacity"
+        (ngModelChange)="updateTax()"
+        class="form-control"
+        placeholder="Capacitatea cilindrică..."
+        maxlength="200"
+        [class.error]="errors.cylinder_capacity"
+      />
+      <label [hidden]="!errors.cylinder_capacity" class="error-label">
+        {{ errors.cylinder_capacity }}
+      </label>
+    </div>
+  </div>
+
+  <div class="row">
+    <label class="col-2 control-label">Taxa de impozit*</label>
+    <div class="col-4">
+      <input
+        [ngModel]="formattedTax"
+        class="form-control"
+        placeholder="Taxa de impozit..."
+        maxlength="200"
+        disabled
+      />
+    </div>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-outline-dark"
+    (click)="activeModal.dismiss()"
+  >
+    Renunță
+  </button>
+  <button type="button" class="btn btn-success" (click)="save()">
+    Salvează
+  </button>
+</div>

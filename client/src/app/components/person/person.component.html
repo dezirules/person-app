@@ -1,0 +1,187 @@
+<div class="col-12 mt-2 width-1220">
+  <div class="row">
+    <div class="col-4">
+      <button class="btn btn-primary btn-sm" type="button" (click)="addEdit()">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        Adaugă
+      </button>
+    </div>
+
+    <div class="col-4">
+      <h4 class="text-center">Persoane</h4>
+    </div>
+    <div class="col-4"></div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 width-1220">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr class="table-bordered">
+            <th class="column-id" rowspan="3">Nr. Crt.</th>
+            <th class="column-name" rowspan="2">Nume / Prenume</th>
+            <th class="column-cnp" rowspan="2">CNP</th>
+            <th class="column-age" rowspan="2">Vârsta</th>
+            <th class="column-cars" colspan="4">Mașini</th>
+            <th rowspan="3" width="70px"></th>
+          </tr>
+          <tr>
+            <th class="column-brand">Marcă / Model</th>
+            <th class="column-year">Anul fabricației</th>
+            <th class="column-cylinders">Capacitatea cilindrică</th>
+            <th class="column-tax">Taxa de impozit</th>
+          </tr>
+          <tr>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+            <th>
+              <input class="form-control input-xs" placeholder="Căutare..." />
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+
+    <div class="col-12 position-relative width-1220">
+      <div
+        id="view"
+        class="view-scroll-persons"
+        style="max-height: 60vh"
+        [scrollWindow]="false"
+        (scroll)="showTopButton()"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="30"
+        (scrolled)="onScrollDown()"
+      >
+        <button
+          type="button"
+          id="back-top"
+          class="{{ this.showBackTop }}"
+          (click)="onScrollTop()"
+        >
+          <fa-icon [icon]="faChevronUp"></fa-icon>
+        </button>
+        <table
+          class="table table-hover table-striped table-bordered font-14 p-0"
+        >
+          <tbody>
+            <ng-container
+              *ngFor="
+                let person of persons.slice(0, limit);
+                let i = index;
+                trackBy: trackByPersonId
+              "
+            >
+              <tr (dblclick)="addEdit(person.id_person)" class="cursor-pointer">
+                <td
+                  [rowSpan]="person.cars.length > 0 ? person.cars.length : 1"
+                  class="text-center column-id"
+                >
+                  {{ person.id_person }}
+                </td>
+                <td
+                  [rowSpan]="person.cars.length > 0 ? person.cars.length : 1"
+                  class="text-center column-name"
+                >
+                  {{ person.last_name + " " + person.first_name }}
+                </td>
+                <td
+                  [rowSpan]="person.cars.length > 0 ? person.cars.length : 1"
+                  class="text-center column-cnp"
+                >
+                  {{ person.cnp }}
+                </td>
+                <td
+                  [rowSpan]="person.cars.length > 0 ? person.cars.length : 1"
+                  class="text-center column-age"
+                >
+                  {{ person.age }}
+                </td>
+                <td class="text-center column-brand">
+                  {{ person.cars.length > 0 ? person.cars[0].brand : "-" }}
+                </td>
+                <td class="text-center column-year">
+                  {{ person.cars.length > 0 ? person.cars[0].year : "-" }}
+                </td>
+                <td class="text-center column-cylinders">
+                  {{
+                    person.cars.length > 0
+                      ? person.cars[0].cylinder_capacity
+                      : "-"
+                  }}
+                </td>
+                <td class="text-center column-tax">
+                  {{ person.cars.length > 0 ? person.cars[0].tax : "-" }}
+                </td>
+                <td
+                  width="30px"
+                  (click)="addEdit(person.id_person)"
+                  class="text-center"
+                  [rowSpan]="person.cars.length > 0 ? person.cars.length : 1"
+                >
+                  <fa-icon
+                    class="text-primary"
+                    [icon]="faEdit"
+                    tooltip="Modificare"
+                    placement="left"
+                  ></fa-icon>
+                </td>
+                <td
+                  width="30px"
+                  (click)="delete(person)"
+                  class="text-center"
+                  [rowSpan]="person.cars.length > 0 ? person.cars.length : 1"
+                >
+                  <fa-icon
+                    class="text-danger"
+                    [icon]="faTrashAlt"
+                    tooltip="Ștergere"
+                    placement="left"
+                  ></fa-icon>
+                </td>
+              </tr>
+
+              <tr
+                *ngFor="let car of person.cars.slice(1)"
+                (dblclick)="addEdit(person.id_person)"
+                class="cursor-pointer"
+              >
+                <td class="text-center column-brand">{{ car.brand }}</td>
+                <td class="text-center column-year">{{ car.year }}</td>
+                <td class="text-center column-cylinders">
+                  {{ car.cylinder_capacity }}
+                </td>
+                <td class="text-center column-tax">{{ car.tax }}</td>
+              </tr>
+            </ng-container>
+
+            <tr
+              colspan="15"
+              *ngIf="!persons.length && !loading"
+              class="text-center fw-bold"
+            >
+              <td>Date inexistente!</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

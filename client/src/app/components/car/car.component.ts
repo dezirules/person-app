@@ -1,4 +1,4 @@
-import { Car } from './../../types/index';
+import { Car } from './../../types';
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -41,20 +41,20 @@ export class CarComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
+  async loadData() {
     this.loading = true;
     this._spinner.show();
 
-    this._carService
-      .findAll()
-      .then((cars) => {
-        this.cars = cars;
-      })
-      .catch(() => toastr.error('Eroare la preluarea informațiilor!'))
-      .finally(() => {
-        this._spinner.hide();
-        this.loading = false;
-      });
+    try {
+      const cars = await this._carService.findAll();
+
+      this.cars = cars;
+    } catch (error) {
+      toastr.error('Eroare la preluarea informațiilor!');
+    } finally {
+      this._spinner.hide();
+      this.loading = false;
+    }
   }
 
   addEdit(id_car?: number) {
@@ -83,14 +83,15 @@ export class CarComponent implements OnInit {
       </p>
     `;
 
-    modalRef.closed.subscribe(() => {
-      this._carService
-        .destroy(car.id_car)
-        .then(() => {
-          toastr.success('Informația a fost ștearsă cu succes!');
-          this.loadData();
-        })
-        .catch(() => toastr.error('Eroare la ștergerea informației!'));
+    modalRef.closed.subscribe(async () => {
+      try {
+        await this._carService.destroy(car.id_car);
+
+        toastr.success('Informația a fost ștearsă cu succes!');
+        this.loadData();
+      } catch (error) {
+        toastr.error('Eroare la ștergerea informației!');
+      }
     });
   }
 

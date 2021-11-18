@@ -4,15 +4,6 @@ module.exports = (db) => {
   const {Person, Junction} = db.models;
 
   return {
-    /*
-     * req.body {
-     *   first_name: string;
-     *   last_name: string;
-     *   cnp: string;
-     *   age: number;
-     *   cars?: id_car[];
-     * }
-     */
     create: async (req, res) => {
       try {
         const person = req.body;
@@ -54,15 +45,6 @@ module.exports = (db) => {
       }
     },
 
-    /*
-     * req.body {
-     *   first_name: string;
-     *   last_name: string;
-     *   cnp: string;
-     *   age: number;
-     *   cars?: id_car[];
-     * }
-     */
     update: async (req, res) => {
       try {
         const person = req.body;

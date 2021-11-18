@@ -5,76 +5,91 @@
 </div>
 
 <div class="modal-body">
-  <div class="row">
-    <label class="col-2 control-label">Prenume*</label>
-    <div class="col-4">
-      <input
-        [(ngModel)]="person.first_name"
-        class="form-control"
-        placeholder="Prenume..."
-        maxlength="200"
-        [class.error]="errors.first_name"
-      />
-      <label [hidden]="!errors.first_name" class="error-label">
-        {{ errors.first_name }}
-      </label>
+  <form [formGroup]="personForm" (ngSubmit)="save()" id="person-form">
+    <div class="row">
+      <label class="col-2 control-label">Prenume*</label>
+      <div class="col-4">
+        <input
+          formControlName="first_name"
+          class="form-control"
+          placeholder="Prenume..."
+          maxlength="255"
+          [class.error]="first_name?.invalid && first_name?.touched"
+        />
+        <small
+          class="text-danger"
+          *ngIf="first_name?.invalid && first_name?.touched"
+          >Prenumele trebuie introdus</small
+        >
+      </div>
+
+      <label class="col-2 control-label">Nume*</label>
+      <div class="col-4">
+        <input
+          formControlName="last_name"
+          class="form-control"
+          placeholder="Nume..."
+          maxlength="255"
+          [class.error]="last_name?.invalid && last_name?.touched"
+        />
+        <small
+          class="text-danger"
+          *ngIf="last_name?.invalid && last_name?.touched"
+          >Numele trebuie introdus</small
+        >
+      </div>
     </div>
 
-    <label class="col-2 control-label">Nume*</label>
-    <div class="col-4">
-      <input
-        [(ngModel)]="person.last_name"
-        class="form-control"
-        placeholder="Nume..."
-        maxlength="200"
-        [class.error]="errors.last_name"
-      />
-      <label [hidden]="!errors.last_name" class="error-label">
-        {{ errors.last_name }}
-      </label>
-    </div>
-  </div>
+    <div class="row">
+      <label class="col-2 control-label">CNP*</label>
+      <div class="col-4">
+        <input
+          formControlName="cnp"
+          class="form-control"
+          placeholder="CNP..."
+          maxlength="13"
+          [class.error]="(cnp?.invalid && cnp?.touched) || errors['cnp']"
+          (ngModelChange)="clearErrors()"
+        />
+        <div *ngIf="cnp?.invalid && cnp?.touched">
+          <small class="text-danger" *ngIf="cnp?.hasError('required')"
+            >CNP-ul trebuie introdus</small
+          >
+          <small class="text-danger" *ngIf="cnp?.hasError('invalidCnp')"
+            >Cnp invalid</small
+          >
+        </div>
+        <small [hidden]="!errors['cnp']" class="text-danger">
+          {{ errors["cnp"] }}
+        </small>
+      </div>
 
-  <div class="row">
-    <label class="col-2 control-label">CNP*</label>
-    <div class="col-4">
-      <input
-        [(ngModel)]="person.cnp"
-        class="form-control"
-        placeholder="CNP..."
-        maxlength="200"
-        [class.error]="errors.cnp"
-        (ngModelChange)="updateAge()"
-      />
-      <label [hidden]="!errors.cnp" class="error-label">
-        {{ errors.cnp }}
-      </label>
+      <label class="col-2 control-label">Vârsta*</label>
+      <div class="col-4">
+        <input
+          formControlName="age"
+          class="form-control"
+          placeholder="Vârsta..."
+          maxlength="3"
+          readonly
+        />
+      </div>
     </div>
-    <label class="col-2 control-label">Vârsta*</label>
-    <div class="col-4">
-      <input
-        [ngModel]="person.age"
-        class="form-control"
-        placeholder="Vârsta..."
-        maxlength="200"
-        disabled
-      />
-    </div>
-  </div>
 
-  <div class="row">
-    <label class="col-2 control-label">Mașini</label>
-    <ng-select
-      [items]="cars"
-      [multiple]="true"
-      [hideSelected]="true"
-      placeholder="Selectează mașini..."
-      bindLabel="carLabel"
-      [(ngModel)]="selectedCars"
-      (change)="setCars($event)"
-    >
-    </ng-select>
-  </div>
+    <div class="row">
+      <label class="col-2 control-label">Mașini</label>
+      <ng-select
+        [items]="cars"
+        [multiple]="true"
+        [hideSelected]="true"
+        placeholder="Selectează mașini..."
+        bindLabel="carLabel"
+        bindValue="id_car"
+        formControlName="selectedCarsIds"
+      >
+      </ng-select>
+    </div>
+  </form>
 </div>
 
 <div class="modal-footer">
@@ -85,7 +100,14 @@
   >
     Renunță
   </button>
-  <button type="button" class="btn btn-success" (click)="save()">
+
+  <button
+    type="button"
+    class="btn btn-success"
+    type="submit"
+    form="person-form"
+    [disabled]="personForm.invalid"
+  >
     Salvează
   </button>
 </div>

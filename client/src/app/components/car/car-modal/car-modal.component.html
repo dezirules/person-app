@@ -5,81 +5,100 @@
 </div>
 
 <div class="modal-body">
-  <div class="row">
-    <label class="col-2 control-label">Marcă*</label>
-    <div class="col-4">
-      <input
-        [(ngModel)]="car.brand"
-        class="form-control"
-        placeholder="Marcă..."
-        maxlength="200"
-        [class.error]="errors.brand"
-      />
-      <label [hidden]="!errors.brand" class="error-label">
-        {{ errors.brand }}
-      </label>
+  <form [formGroup]="carForm" (ngSubmit)="save()" id="car-form">
+    <div class="row">
+      <label class="col-2 control-label">Marcă*</label>
+      <div class="col-4">
+        <input
+          formControlName="brand"
+          class="form-control"
+          placeholder="Marcă..."
+          maxlength="255"
+          [class.error]="brand?.invalid && brand?.touched"
+        />
+        <small class="text-danger" *ngIf="brand?.invalid && brand?.touched">
+          Marca trebuie introdusă
+        </small>
+      </div>
+
+      <label class="col-2 control-label">Model*</label>
+      <div class="col-4">
+        <input
+          formControlName="model"
+          class="form-control"
+          placeholder="Model..."
+          maxlength="255"
+          [class.error]="model?.invalid && model?.touched"
+        />
+        <small class="text-danger" *ngIf="model?.invalid && model?.touched">
+          Modelul trebuie introdus
+        </small>
+      </div>
     </div>
 
-    <label class="col-2 control-label">Model*</label>
-    <div class="col-4">
-      <input
-        [(ngModel)]="car.model"
-        class="form-control"
-        placeholder="Model..."
-        maxlength="200"
-        [class.error]="errors.model"
-      />
-      <label [hidden]="!errors.model" class="error-label">
-        {{ errors.model }}
-      </label>
-    </div>
-  </div>
+    <div class="row">
+      <label class="col-2 control-label">Anul fabricației*</label>
+      <div class="col-4">
+        <input
+          formControlName="year"
+          class="form-control"
+          placeholder="Anul fabricației..."
+          maxlength="4"
+          [class.error]="year?.invalid && year?.touched"
+        />
+        <div *ngIf="year?.invalid && year?.touched">
+          <small class="text-danger" *ngIf="year?.hasError('required')">
+            Anul fabricației trebuie introdus
+          </small>
+          <small class="text-danger" *ngIf="year?.hasError('pattern')">
+            Anul fabricației invalid
+          </small>
+          <small class="text-danger" *ngIf="year?.hasError('futureYear')">
+            Anul fabricației pare incorect
+          </small>
+        </div>
+      </div>
 
-  <div class="row">
-    <label class="col-2 control-label">Anul fabricației*</label>
-    <div class="col-4">
-      <input
-        type="number"
-        [(ngModel)]="car.year"
-        class="form-control"
-        placeholder="Anul fabricației..."
-        maxlength="200"
-        [class.error]="errors.year"
-      />
-      <label [hidden]="!errors.year" class="error-label">
-        {{ errors.year }}
-      </label>
+      <label class="col-2 control-label">Capacitatea cilindrică*</label>
+      <div class="col-4">
+        <input
+          formControlName="cylinder_capacity"
+          class="form-control"
+          placeholder="Capacitatea cilindrică..."
+          maxlength="4"
+          [class.error]="
+            cylinder_capacity?.invalid && cylinder_capacity?.touched
+          "
+        />
+        <div *ngIf="cylinder_capacity?.invalid && cylinder_capacity?.touched">
+          <small
+            class="text-danger"
+            *ngIf="cylinder_capacity?.hasError('required')"
+          >
+            Capacitatea cilindrică trebuie introdusă
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="cylinder_capacity?.hasError('pattern')"
+          >
+            Capacitatea cilindrică invalidă
+          </small>
+        </div>
+      </div>
     </div>
 
-    <label class="col-2 control-label">Capacitatea cilindrică*</label>
-    <div class="col-4">
-      <input
-        type="number"
-        [(ngModel)]="car.cylinder_capacity"
-        (ngModelChange)="updateTax()"
-        class="form-control"
-        placeholder="Capacitatea cilindrică..."
-        maxlength="200"
-        [class.error]="errors.cylinder_capacity"
-      />
-      <label [hidden]="!errors.cylinder_capacity" class="error-label">
-        {{ errors.cylinder_capacity }}
-      </label>
+    <div class="row">
+      <label class="col-2 control-label">Taxa de impozit*</label>
+      <div class="col-4">
+        <input
+          formControlName="tax"
+          class="form-control"
+          placeholder="Taxa de impozit..."
+          readonly
+        />
+      </div>
     </div>
-  </div>
-
-  <div class="row">
-    <label class="col-2 control-label">Taxa de impozit*</label>
-    <div class="col-4">
-      <input
-        [ngModel]="formattedTax"
-        class="form-control"
-        placeholder="Taxa de impozit..."
-        maxlength="200"
-        disabled
-      />
-    </div>
-  </div>
+  </form>
 </div>
 
 <div class="modal-footer">
@@ -90,7 +109,14 @@
   >
     Renunță
   </button>
-  <button type="button" class="btn btn-success" (click)="save()">
+
+  <button
+    type="button"
+    class="btn btn-success"
+    type="submit"
+    form="car-form"
+    [disabled]="carForm.invalid"
+  >
     Salvează
   </button>
 </div>

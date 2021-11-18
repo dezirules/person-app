@@ -41,20 +41,20 @@ export class PersonComponent implements OnInit {
     this.loadData();
   }
 
-  loadData() {
+  async loadData() {
     this.loading = true;
     this._spinner.show();
 
-    this._personService
-      .findAll()
-      .then((persons) => {
-        this.persons = persons;
-      })
-      .catch(() => toastr.error('Eroare la preluarea informațiilor!'))
-      .finally(() => {
-        this._spinner.hide();
-        this.loading = false;
-      });
+    try {
+      const persons = await this._personService.findAll();
+
+      this.persons = persons;
+    } catch (error) {
+      toastr.error('Eroare la preluarea informațiilor!');
+    } finally {
+      this._spinner.hide();
+      this.loading = false;
+    }
   }
 
   addEdit(id_person?: number) {
@@ -84,14 +84,15 @@ export class PersonComponent implements OnInit {
       </p>
     `;
 
-    modalRef.closed.subscribe(() => {
-      this._personService
-        .destroy(person.id_person)
-        .then(() => {
-          toastr.success('Informația a fost ștearsă cu succes!');
-          this.loadData();
-        })
-        .catch(() => toastr.error('Eroare la ștergerea informației!'));
+    modalRef.closed.subscribe(async () => {
+      try {
+        await this._personService.destroy(person.id_person);
+
+        toastr.success('Informația a fost ștearsă cu succes!');
+        this.loadData();
+      } catch (error) {
+        toastr.error('Eroare la ștergerea informației!');
+      }
     });
   }
 

@@ -29,8 +29,7 @@ export class CarService {
   async create(car: Omit<Car, 'id_car'>) {
     try {
       await axios.post('/api/cars', car);
-    } catch (error: any) {
-      if (error.response.status === 400) return error.response.data.errors;
+    } catch (error) {
       throw error;
     }
   }
@@ -38,8 +37,7 @@ export class CarService {
   async update(car: Car) {
     try {
       await axios.put(`/api/cars/${car.id_car}`, car);
-    } catch (error: any) {
-      if (error.response.status === 400) return error.response.data.errors;
+    } catch (error) {
       throw error;
     }
   }
